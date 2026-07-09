@@ -124,7 +124,7 @@ BlockEntityを持つ機械の実例が `energy_machine`（FE受電で発光）�
 - **JEI は導入済み**: `localRuntime "mezz.jei:jei-1.21.1-neoforge:${jei_version}"` + API を `compileOnly`。`runClient` するとアイテム/レシピ確認・チートが使える。
 - **工業系テストMODも導入済み**（`localRuntime` で投入、API連携用に `compileOnly` も併用）。バージョンは `gradle.properties`:
   - Mekanism (`mekanism`) / Immersive Engineering (`immersiveengineering`) / Applied Energistics 2 (`ae2`)
-  - **Mekanism Generators** (`mekanism-generators`) … 発電機(Heat/Solar/風力/ガス燃焼/核分裂炉等)は基盤とは別mod。バージョンは基盤と同期(`${mekanism_version}`)。`localRuntime` のみ
+  - **Mekanism サブモジュール**（すべて別mod・基盤と同期`${mekanism_version}`・`localRuntime`のみ）: Generators (`mekanism-generators`, 発電機) / Tools (`mekanism-tools`, 合金ツール防具) / Additions (`mekanism-additions`, 追加要素)
   - GuideME (`guideme`) … AE2 の必須依存のため `localRuntime` のみ
   - 補足: FE電源のテストは Generators 無しでも IE の Creative Capacitor / Mekanism の Creative Energy Cube で可能
   - 実IDは Modrinth API で 1.21.1/neoforge 向け最新を確認して固定（更新時も同手順）。
