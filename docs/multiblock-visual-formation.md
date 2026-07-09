@@ -60,19 +60,29 @@
 
 → blockstate variant を2種出して別テクスチャに割り当てるだけ。**最小コストで「形成で見た目が変わる」を体験できる**構成。
 
-### 手法B も実装済み（IE級の激変）
+### 手法B 実装で踏んだ2つの落とし穴（重要）
 
-**手法B を実装済み**（2026-07-10）。形成中は構成ブロックが消え、コントローラのBERが完成機械を丸描きする:
+BERで炉心を描く実装で2つの罠にハマった。どちらもBER全般に効く教訓:
 
-- `multiblock/AssemblerRenderer`（`BlockEntityRenderer<AssemblerControllerBlockEntity>`, クライアント専用）: 形成中のみ、**3×3の台座＋中央で回転する炉心**を1つのまとまりとして描画。
-  - 描画は baked model を直接レンダリング: `dispatcher.getBlockModel(formedState)` → `dispatcher.getModelRenderer().renderModel(pose.last(), buffer.getBuffer(RenderType.cutout()), state, model, 1,1,1, LightTexture.FULL_BRIGHT, overlay)`。`renderSingleBlock` は INVISIBLE 状態だと何も描かないので使わず、モデルを直接描く。
-  - `PoseStack` で平たく引き伸ばした台座＋`Axis.YP.rotationDegrees(time)` で回転する炉心。`FULL_BRIGHT` で発光感。
-  - `getRenderBoundingBox` を 3×3 に広げる（でないとカリングで消える）。
-- ブロック側: `getRenderShape` を **形成中は `RenderShape.INVISIBLE`**（未形成は `MODEL`）。→ 素の9ブロックが消え、BERの機械だけが見える＝**別物に一変**。
+1. **BlockEntityのフィールドはクライアントに同期されない**。BERは**クライアント側**で動くのに、`be.isFormed()`（サーバでしか設定していない `formed` フィールド）を見ていたため、クライアントでは常に false → BERが何も描かなかった。
+   → **同期される blockstate を読む**のが正解: `be.getBlockState().getValue(FORMED)`。blockstate は `setBlock` で自動同期される。BE独自データをクライアントで使いたいなら `getUpdateTag`/`getUpdatePacket` を実装する（[machine-patterns.md](machine-patterns.md) §5）。
+2. **`RenderShape.INVISIBLE` を“中身の詰まった不透明ブロック”に返すと、隣接面カリングで空が透けて見える**（水色の板の正体）。BERに描画を丸投げして本体を消したいなら、`INVISIBLE` ではなく **空モデル**（要素の無いモデル）を formed 状態に割り当てるか、`Properties.noOcclusion()` を併用する。
+
+### 手法B 実装済み（動的な炉心をBERで描画）
+
+**手法B を実装済み**（2026-07-10）。上の落とし穴を回避し、**blockstateのFORMEDを読んで**、コントローラのBERが**中央上空に光る炉心を浮遊回転**させる（手法Aのシアン外装と合わせて“稼働する装置”に見える）:
+
+- `multiblock/AssemblerRenderer`（`BlockEntityRenderer<AssemblerControllerBlockEntity>`, クライアント専用）: **blockstate の `FORMED`** を判定に使い、`renderSingleBlock(controller_on 状態, pose, buffer, FULL_BRIGHT, overlay)` を `PoseStack` で上空移動＋`Axis.YP/XP` 回転＋脈動させて描画。`getRenderBoundingBox` を3×3に広げる（カリング対策）。
+- ブロックは `RenderShape.MODEL` のまま（`INVISIBLE` の空透け回避）。手法Aのシアン外装＋BER炉心で「稼働する装置」に見える。
 - 登録: `TechLabClient.onRegisterRenderers`（`EntityRenderersEvent.RegisterRenderers`, クライアント専用）→ `registerBlockEntityRenderer(CONTROLLER_BE.get(), AssemblerRenderer::new)`。
-- **当たり判定はブロックの getCollisionShape が担う**（INVISIBLEでも当たり判定は残る）。見た目(BER)と物理を分離するIE設計そのもの。
+- **当たり判定はブロックの getCollisionShape が担う**（見た目(BER)と物理を分離するIE設計そのもの）。
 
-→ 手法A（テクスチャ切替）と手法B（BERで完成形を丸描き）の両方を実装済み。両者は共存し、手法Bの方がより“別物になる”体験。
+→ 手法A（テクスチャ切替）と手法B（BERで動的な炉心を追加描画）の両方を実装済み。共存して“稼働する装置”感を出す。
+
+<details><summary>より“IE級”に：ブロック本体を完全に消して1モデル化する場合</summary>
+
+formed 状態の blockstate を**空モデル**（要素の無いモデル）に割り当て、BERが台座＋炉心など完成形を丸描きする。`RenderShape.INVISIBLE` は空透けが起きるので使わない（もしくは `Properties.noOcclusion()` を併用）。当たり判定は各ブロックの `getCollisionShape` が引き続き担う。
+</details>
 
 ---
 
