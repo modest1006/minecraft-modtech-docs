@@ -100,6 +100,7 @@ com.example.techlab
 - [docs/mekanism-integration.md](docs/mekanism-integration.md) … Mekanism連携（chemical/gas統一システム、`Capabilities.CHEMICAL`、`BasicChemicalTank`＋`IMekanismChemicalHandler`）。**FEは連携済み**（既存機械がそのままMekanism電力と繋がる）。
 - [docs/immersive-engineering-integration.md](docs/immersive-engineering-integration.md) … IE連携。**FEは連携済み**＋**IE機械レシピはJSONで追加（コード不要）**。多ブロック/鉱脈は `api/*` を compat 隔離で。
 - [docs/multiblock-architecture.md](docs/multiblock-architecture.md) … マルチブロック（複数ブロックの大型装置）のアーキテクチャ。コントローラ/パーツ方式、vanilla `BlockPattern` での形成検出、Capability委譲、向き・永続化・レンダリング、IEフレームワークの構造。
+- [docs/state-driven-animation.md](docs/state-driven-animation.md) … スタンバイ ⇄ 稼働のような**状態駆動アニメーション**。サーバは瞬時切替(blockstate)、クライアントは lerp で補間→複数の描画要素を単一のtで連動。assemblerで実装済み。
 - [docs/moving-blocks-collision.md](docs/moving-blocks-collision.md) … 動くブロック（エレベーター/自動ドア）と当たり判定の各アプローチ。A:テレポート/瞬間、B:VoxelShape段階アニメ、C:ピストン式移動ブロック、D:エンティティ化コントラプション（Create/Moving Elevators方式）。
 
 ## 工業系MOD連携の設計方針
