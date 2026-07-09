@@ -60,7 +60,19 @@
 
 → blockstate variant を2種出して別テクスチャに割り当てるだけ。**最小コストで「形成で見た目が変わる」を体験できる**構成。
 
-- **本格（手法B・未実装）**: コントローラBEに BER を付け、完成形の大きなモデルを描画。コントローラ/ケーシングは formed 時に `RenderShape.INVISIBLE`。当たり判定は各ブロックの `getCollisionShape`/`getShape` を formed に応じて機械形状に。IE級の“別物になる”見た目はこちら。
+### 手法B も実装済み（IE級の激変）
+
+**手法B を実装済み**（2026-07-10）。形成中は構成ブロックが消え、コントローラのBERが完成機械を丸描きする:
+
+- `multiblock/AssemblerRenderer`（`BlockEntityRenderer<AssemblerControllerBlockEntity>`, クライアント専用）: 形成中のみ、**3×3の台座＋中央で回転する炉心**を1つのまとまりとして描画。
+  - 描画は baked model を直接レンダリング: `dispatcher.getBlockModel(formedState)` → `dispatcher.getModelRenderer().renderModel(pose.last(), buffer.getBuffer(RenderType.cutout()), state, model, 1,1,1, LightTexture.FULL_BRIGHT, overlay)`。`renderSingleBlock` は INVISIBLE 状態だと何も描かないので使わず、モデルを直接描く。
+  - `PoseStack` で平たく引き伸ばした台座＋`Axis.YP.rotationDegrees(time)` で回転する炉心。`FULL_BRIGHT` で発光感。
+  - `getRenderBoundingBox` を 3×3 に広げる（でないとカリングで消える）。
+- ブロック側: `getRenderShape` を **形成中は `RenderShape.INVISIBLE`**（未形成は `MODEL`）。→ 素の9ブロックが消え、BERの機械だけが見える＝**別物に一変**。
+- 登録: `TechLabClient.onRegisterRenderers`（`EntityRenderersEvent.RegisterRenderers`, クライアント専用）→ `registerBlockEntityRenderer(CONTROLLER_BE.get(), AssemblerRenderer::new)`。
+- **当たり判定はブロックの getCollisionShape が担う**（INVISIBLEでも当たり判定は残る）。見た目(BER)と物理を分離するIE設計そのもの。
+
+→ 手法A（テクスチャ切替）と手法B（BERで完成形を丸描き）の両方を実装済み。両者は共存し、手法Bの方がより“別物になる”体験。
 
 ---
 
