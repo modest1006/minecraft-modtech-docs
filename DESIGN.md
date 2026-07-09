@@ -79,7 +79,10 @@ com.example.techlab
 
 ## 実装ノウハウ（詳細）
 
-加工マシンの中核パターン（**在庫 ItemStackHandler ／ エネルギー ／ カスタム加工レシピ ／ GUI(Menu+Screen) ／ クライアント同期 ／ 流体 ／ datagen ／ AE2ストレージ提供**）は [docs/machine-patterns.md](docs/machine-patterns.md) に、実APIシグネチャ（`javap`で確認済み）付きでまとめてある。新しいマシンを作るときはまずそれを読む。
+実APIシグネチャ（`javap`で確認済み）付きの詳細ノウハウ:
+
+- [docs/machine-patterns.md](docs/machine-patterns.md) … 加工マシンの中核（**在庫 ／ エネルギー ／ カスタム加工レシピ ／ GUI(Menu+Screen) ／ クライアント同期 ／ 流体 ／ datagen ／ AE2ストレージ提供**）。新しいマシンを作るときはまずこれ。
+- [docs/mekanism-integration.md](docs/mekanism-integration.md) … Mekanism連携（chemical/gas統一システム、`Capabilities.CHEMICAL`、`BasicChemicalTank`＋`IMekanismChemicalHandler`）。**FEは連携済み**（既存機械がそのままMekanism電力と繋がる）。
 
 ## 工業系MOD連携の設計方針
 
