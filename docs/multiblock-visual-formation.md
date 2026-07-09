@@ -50,10 +50,17 @@
 
 ---
 
-## 我々の `assembler` に応用するなら
+## 我々の `assembler` に応用（手法A：実装済み）
 
-- **簡易（手法A・おすすめの入口）**: `FORMED` の blockstate variant を `formed=false/true` で**別モデル/別テクスチャ**にする。datagen で variant 2種を出すだけ（今は空variant＋lightLevelだが、`getVariantBuilder(block).forAllStates(...)` で formed により modelFile を分ける）。→ 「形成で見た目が変わる」を最小コストで。
-- **本格（手法B）**: コントローラBEに BER を付け、完成形の大きなモデルを描画。コントローラ/ケーシングは formed 時に `RenderShape.INVISIBLE`。当たり判定は各ブロックの `getCollisionShape`/`getShape` を formed に応じて機械形状に。
+**手法A を実装済み**（2026-07-09）。`ModBlockStateProvider` で `getVariantBuilder` を使い、`FORMED`(=LIT) の値で描画モデルを切り替える:
+- 未形成 (`lit=false`) → `assembler_controller` / `assembler_casing`（素の金属）。
+- 形成後 (`lit=true`) → `assembler_controller_on` / `assembler_casing_on`（発光パネル/配線が光る稼働テクスチャ）。
+- 併せて lightLevel で発光もするので、右クリック形成の瞬間に**テクスチャが一変＋光る**。
+- アイテムの手持ち見た目は未形成モデル（`simpleBlockItem(block, offModel)`）。
+
+→ blockstate variant を2種出して別テクスチャに割り当てるだけ。**最小コストで「形成で見た目が変わる」を体験できる**構成。
+
+- **本格（手法B・未実装）**: コントローラBEに BER を付け、完成形の大きなモデルを描画。コントローラ/ケーシングは formed 時に `RenderShape.INVISIBLE`。当たり判定は各ブロックの `getCollisionShape`/`getShape` を formed に応じて機械形状に。IE級の“別物になる”見た目はこちら。
 
 ---
 
