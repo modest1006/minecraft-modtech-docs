@@ -233,6 +233,8 @@ private final FluidTank tank = new FluidTank(8000) { // 8バケツ
 
 出力は `build.gradle` の run `data` が `src/generated/resources` に書き出し、sourceSet設定でビルドに取り込まれる（`.\gradlew.bat runData`）。**テクスチャPNGだけは自作**。移行時は手書きJSONを削除して二重管理を避ける。
 
+> **このプロジェクトでは導入済み**（`com.example.techlab.datagen`、エントリ `DataGenerators`）。実際の Provider 実装・generated/手書きの切り分け・optional タグの扱いは `DESIGN.md`「データ生成」を参照。
+
 ---
 
 ## 8. AE2 ストレージ提供（次のAE2段の下調べ）

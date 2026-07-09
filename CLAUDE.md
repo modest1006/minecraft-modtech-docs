@@ -99,9 +99,14 @@ BlockEntityを持つ機械の実例が `energy_machine`（FE受電で発光）�
 - `src/main/templates/META-INF/neoforge.mods.toml` はテンプレート。`${mod_id}` 等のプレースホルダは `build.gradle` の `generateModMetadata` タスクが `gradle.properties` の値で置換して生成する。**このファイルを直接いじるときはプレースホルダを壊さないこと**。翻訳キーではなくメタデータ。
 - ブロックが `requiresCorrectToolForDrops()` を持つ場合、`minecraft:mineable/<tool>` タグ **と** ティアタグ（例 `needs_iron_tool`）の両方に入れないと「適正ツールでもドロップしない」状態になる。
 
-### データ生成 (datagen) について
+### データ生成 (datagen) — 導入済み
 
-現状のモデル/ブロックステート/レシピ/ドロップ表/タグ JSON は**手書き**（サンプルを即動かすため）。要素が増えたら `runData` によるデータ生成へ移行するのが定石。datagen provider を追加したら `.\gradlew.bat runData` で `src/generated/resources` に出力され、`build.gradle` の sourceSet 設定によりビルドに取り込まれる。方針の詳細は `DESIGN.md` を参照。
+コアのモデル/ブロックステート/レシピ/ドロップ表/タグ/言語 JSON は **datagen で自動生成**する（`com.example.techlab.datagen`、エントリ `DataGenerators`）。
+
+- **要素を足したら `.\gradlew.bat runData` を再実行** → `src/generated/resources` に出力され、`build.gradle` の sourceSet 設定でビルドに含まれる。
+- datagenが吐くファイルは**手書きしない**（同一パスが `src/main/resources` と `src/generated/resources` に両方あるとビルドで重複衝突する）。
+- **テクスチャPNGだけは手動**（`assets/techlab/textures/`）。
+- 例外: `compat/ae2` の `me_connector` は datagen をAE2に依存させないため blockstate/model/loot を手書き維持（タグ・言語は datagen 側で optional 扱い）。詳細は `DESIGN.md`「データ生成」。
 
 ## 工業系連携・テスト環境
 

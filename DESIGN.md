@@ -58,14 +58,29 @@ com.example.techlab
 
 `Item.Properties()` に `.food(...)`、`SwordItem`/`PickaxeItem` などのサブクラスやコンポーネントで表現する。1.21 は Item コンポーネント(data component)体系なので、旧来の NBT ベースの記事は読み替えが必要。
 
-## データ生成 (datagen) への移行方針
+## データ生成 (datagen) — 導入済み
 
-現状は JSON 手書きだが、要素数が増えると破綻するので **datagen 化**を推奨する。
+コアの定型JSONは **datagen 化済み**（手書きから移行完了）。実装は `com.example.techlab.datagen`:
 
-- `build.gradle` に `runData` 用の run 構成が既にある。`GatherDataEvent` を購読して各種 `DataProvider`（`BlockStateProvider`, `ItemModelProvider`, `RecipeProvider`, `LootTableProvider`, `*TagsProvider`）を登録する。
-- 実行: `.\gradlew.bat runData` → `src/generated/resources` に出力。`build.gradle` の sourceSet 設定で成果物ビルドに含まれる。
-- テクスチャ PNG だけは datagen で生成できない（自前で用意する）。モデル/ステート/レシピ/ドロップ/タグは datagen 化する価値が高い。
-- 移行するときは手書き JSON を削除して二重管理を避ける。
+| Provider | 生成物 |
+| --- | --- |
+| `ModBlockStateProvider` | blockstates / block models / block item models（`simpleBlockWithItem`・LIT variantは`getVariantBuilder`）＋ 通常アイテムモデル（`itemModels().basicItem`） |
+| `ModRecipeProvider` | クラフトレシピ（`ShapedRecipeBuilder`/`ShapelessRecipeBuilder`、`save(output, id)`でファイル名固定）＋ レシピ解放advancement |
+| `ModBlockLootProvider`(+`LootTableProvider`) | ブロックのドロップ表（`dropSelf`） |
+| `ModBlockTagsProvider` | `mineable/pickaxe`・`needs_iron_tool`・`c:storage_blocks` |
+| `ModItemTagsProvider` | `c:gems`・`c:storage_blocks`（item側。ブロックタグの`contentsGetter()`を受け取る） |
+| `ModEnUsProvider`/`ModJaJpProvider` | `lang/en_us.json`・`ja_jp.json` |
+
+エントリは `DataGenerators.gatherData(GatherDataEvent)`（`TechLab` コンストラクタで `modEventBus.addListener`）。
+
+**運用**:
+- 生成: `.\gradlew.bat runData` → `src/generated/resources` に出力。`build.gradle` の sourceSet 設定でビルドに含まれる。要素を足したら **runData を再実行**。
+- **テクスチャPNGは対象外**（自前で用意。`assets/techlab/textures/` に手動配置）。
+- **二重管理禁止**: datagenが吐くファイルの手書きは削除する（同一パスが main と generated に両方あるとビルドで重複衝突する）。
+
+**設計上のポイント（学び）**:
+- **compat/ae2 の me_connector は datagen対象外**（datagenをAE2に依存させないため、blockstate/model/loot は手書き維持）。ただし共有ファイル（タグ・言語）だけは datagen 側でまとめて出す。
+- me_connector のタグ登録は `addOptional(ResourceLocation)` で **optional エントリ**（`{"id":...,"required":false}`）にした。→ AE2 未導入時でもタグ読み込みエラーにならない（手書き時代の潜在バグも解消）。言語は文字列キー `add("block.techlab.me_connector", ...)` で追加（AE2非参照）。
 
 ## テクスチャ運用
 
