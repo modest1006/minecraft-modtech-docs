@@ -71,6 +71,7 @@ TechLab (@Mod, エントリポイント)
        ModItems.register()            → item/ModItems.java        (ITEMS)
        ModBlocks.register()           → block/ModBlocks.java      (BLOCKS + 各ブロックのBlockItem)
        ModBlockEntities.register()    → block/entity/ModBlockEntities.java (BlockEntityType)
+       ModMultiblock.register()       → multiblock/ModMultiblock.java (マルチブロック assembler、隔離登録＋Capability委譲)
        ModCreativeModeTabs.register() → item/ModCreativeModeTabs.java (独自クリエイティブタブ)
      + addListener(ModCapabilities::registerCapabilities) → ModCapabilities.java (FE等のCapability公開)
 ```

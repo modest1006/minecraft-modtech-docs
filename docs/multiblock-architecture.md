@@ -121,6 +121,26 @@ event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PART_BE.get(), (partBe
 
 ---
 
+## 実装済みサンプル: `assembler`（multiblock パッケージ）
+
+本ドキュメントの設計を最小構成で実装したもの（`com.example.techlab.multiblock`）。
+
+- 形: **3×3 の平面**（中心=`assembler_controller`、周囲8マス=`assembler_casing`、同じ高さ）。
+- 操作: コントローラを**右クリック**で形成/解除トグル（アクションバーに結果表示）。
+- 形成すると `FORMED`（発光）になり、コントローラ/ケーシングが光る。どれか壊すと自動で解除。
+- **Capability委譲**: コントローラはFEバッファを公開、ケーシングは各面のFE要求をコントローラへ委譲（`ModMultiblock` の `RegisterCapabilitiesEvent`）。→ 構造のどの面にケーブルを繋いでも受電できる。
+- 構成: `AssemblerControllerBlock(Entity)` / `AssemblerCasingBlock(Entity)` / `ModMultiblock`（登録＋Capability）。検出は相対座標の手動チェック（`MEMBER_OFFSETS`）、回転が要る大型構造では §2 の `BlockPattern` に置き換える。
+- リソースはすべて datagen 生成（`FORMED` は光量のみ変えるので `simpleBlockWithItem` の空variantで1モデル）。
+
+**実機テスト手順**（帰宅後）:
+1. クリエイティブで「アセンブラ・ケーシング」8個を 3×3 の枠（中央を空ける）に置く。
+2. 中央に「アセンブラ・コントローラ」を置く。
+3. コントローラを**右クリック** → 「アセンブラを形成しました！」と表示され、9ブロックが発光。
+4. 隣接するケーシングに Mekanism/IE の発電機＋ケーブルを繋ぐ → コントローラのFEバッファに受電（委譲）。
+5. どれか1つを壊す → 自動で解除・消灯。もう一度コントローラ右クリックで再形成。
+
+（コンパイル・全MODロード・ビルド・データ生成まで検証済み。ゲーム内の見た目/操作は要確認。）
+
 ## ハマりどころ
 - **チャンク境界での分割ロード**（片側だけロード）→ 揃うまで休止する設計に。
 - **向きの座標変換ミス**（回転の当て方）→ 相対座標系を1箇所に集約。
