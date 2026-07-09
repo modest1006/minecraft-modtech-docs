@@ -92,6 +92,7 @@ event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PART_BE.get(), (partBe
 - 形成時にパーツのモデルを **非表示 or 別モデル**へ（blockstate `formed`）。
 - 全体を1つの見た目にするなら、コントローラに `BlockEntityRenderer` を付けて構造全体を描く（IE `MultiblockRenderer`）。または各ブロックが自分の部分モデルを持つ。
 - 任意でゴーストプレビュー（設置前に半透明で完成形を表示）。
+- **形成で見た目が激変する原理**（IEのように素材ブロック→精密な機械へ一変する仕組み）は [multiblock-visual-formation.md](multiblock-visual-formation.md) に詳説。
 
 ---
 
