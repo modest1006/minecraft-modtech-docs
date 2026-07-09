@@ -99,6 +99,7 @@ com.example.techlab
 - [docs/machine-patterns.md](docs/machine-patterns.md) … 加工マシンの中核（**在庫 ／ エネルギー ／ カスタム加工レシピ ／ GUI(Menu+Screen) ／ クライアント同期 ／ 流体 ／ datagen ／ AE2ストレージ提供**）。新しいマシンを作るときはまずこれ。
 - [docs/mekanism-integration.md](docs/mekanism-integration.md) … Mekanism連携（chemical/gas統一システム、`Capabilities.CHEMICAL`、`BasicChemicalTank`＋`IMekanismChemicalHandler`）。**FEは連携済み**（既存機械がそのままMekanism電力と繋がる）。
 - [docs/immersive-engineering-integration.md](docs/immersive-engineering-integration.md) … IE連携。**FEは連携済み**＋**IE機械レシピはJSONで追加（コード不要）**。多ブロック/鉱脈は `api/*` を compat 隔離で。
+- [docs/multiblock-architecture.md](docs/multiblock-architecture.md) … マルチブロック（複数ブロックの大型装置）のアーキテクチャ。コントローラ/パーツ方式、vanilla `BlockPattern` での形成検出、Capability委譲、向き・永続化・レンダリング、IEフレームワークの構造。
 
 ## 工業系MOD連携の設計方針
 
