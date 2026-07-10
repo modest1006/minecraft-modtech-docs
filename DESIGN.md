@@ -103,6 +103,7 @@ com.example.techlab
 - [docs/state-driven-animation.md](docs/state-driven-animation.md) … スタンバイ ⇄ 稼働のような**状態駆動アニメーション**。サーバは瞬時切替(blockstate)、クライアントは lerp で補間→複数の描画要素を単一のtで連動。assemblerで実装済み。
 - [docs/custom-gui-and-processing.md](docs/custom-gui-and-processing.md) … 独自マシンに**カスタムGUIと加工機能**（BlockEntity＋ItemStackHandler＋カスタムRecipe＋Menu＋Screen）。テクスチャなしScreen、レシピの順不同マッチ、ContainerDataでのenergy送信の16bit分割、状態駆動アニメとの連動。assemblerで実装済み。
 - [docs/moving-blocks-collision.md](docs/moving-blocks-collision.md) … 動くブロック（エレベーター/自動ドア）と当たり判定の各アプローチ。A:テレポート/瞬間、B:VoxelShape段階アニメ、C:ピストン式移動ブロック、D:エンティティ化コントラプション（Create/Moving Elevators方式）。
+- [docs/belt-conveyor.md](docs/belt-conveyor.md) … ベルトコンベアの実装（薄板VoxelShape＋`entityInside`で上限型加速＋センタリング＋端点で`IItemHandler.insertItemStacked`）。Phase 1 は `techlab:conveyor` として実装済み。UVスクロール／上り下り／速度差はPhase 2〜4のロードマップ。
 
 ## 工業系MOD連携の設計方針
 
