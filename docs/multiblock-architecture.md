@@ -129,7 +129,9 @@ event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PART_BE.get(), (partBe
 - 形: **3×3 の平面**（中心=`assembler_controller`、周囲8マス=`assembler_casing`、同じ高さ）。
 - 操作: コントローラを**右クリック**で形成/解除トグル（アクションバーに結果表示）。
 - 形成すると `FORMED`（発光）になり、コントローラ/ケーシングが光る。どれか壊すと自動で解除。
-- **Capability委譲**: コントローラはFEバッファを公開、ケーシングは各面のFE要求をコントローラへ委譲（`ModMultiblock` の `RegisterCapabilitiesEvent`）。→ 構造のどの面にケーブルを繋いでも受電できる。
+- **Capability委譲**: コントローラは FE バッファ＆外部向け IItemHandler を公開、ケーシングは各面の要求をコントローラへ委譲（`ModMultiblock` の `RegisterCapabilitiesEvent`）。→ 構造のどの面にケーブルを繋いでも受電でき、どのケーシング面にパイプ/ホッパーを繋いでもアイテム搬入出できる。
+  - **アイテムのルーティングルール**（`AssemblerControllerBlockEntity#getExternalItemHandler`）: `insertItem` は出力スロットを拒否・入力スロット(0,1)のみ受け付ける。`extractItem` は出力スロット(2)のみ許可・入力は EMPTY を返して吸えない。ホッパー等は全スロットを順に試すので、この2ルールだけで「入れたら入力に入る／取り出したら出力から出る」が成立する。
+  - 未形成時は casing 側の委譲は `null` を返すので Capability が生えず、パイプは繋がらない（形成前に線を敷いておいて後から形成する運用もOK）。
 - 構成: `AssemblerControllerBlock(Entity)` / `AssemblerCasingBlock(Entity)` / `ModMultiblock`（登録＋Capability）。検出は相対座標の手動チェック（`MEMBER_OFFSETS`）、回転が要る大型構造では §2 の `BlockPattern` に置き換える。
 - リソースはすべて datagen 生成（`FORMED` は光量のみ変えるので `simpleBlockWithItem` の空variantで1モデル）。
 
