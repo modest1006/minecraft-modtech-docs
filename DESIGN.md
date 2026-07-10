@@ -104,6 +104,7 @@ com.example.techlab
 - [docs/custom-gui-and-processing.md](docs/custom-gui-and-processing.md) … 独自マシンに**カスタムGUIと加工機能**（BlockEntity＋ItemStackHandler＋カスタムRecipe＋Menu＋Screen）。テクスチャなしScreen、レシピの順不同マッチ、ContainerDataでのenergy送信の16bit分割、状態駆動アニメとの連動。assemblerで実装済み。
 - [docs/moving-blocks-collision.md](docs/moving-blocks-collision.md) … 動くブロック（エレベーター/自動ドア）と当たり判定の各アプローチ。A:テレポート/瞬間、B:VoxelShape段階アニメ、C:ピストン式移動ブロック、D:エンティティ化コントラプション（Create/Moving Elevators方式）。
 - [docs/belt-conveyor.md](docs/belt-conveyor.md) … ベルトコンベアの実装（薄板VoxelShape＋`entityInside`で上限型加速＋センタリング＋端点で`IItemHandler.insertItemStacked`）。Phase 1 は `techlab:conveyor` として実装済み。UVスクロール／上り下り／速度差はPhase 2〜4のロードマップ。
+- [docs/catapult.md](docs/catapult.md) … アイテムカタパルト（BE無しブロックに`IItemHandler`を公開→挿入時に即 `ItemEntity` を 45°放物線発射）。Phase 1 は `techlab:catapult` として実装済み。ベルコンと直結すると物流アトラクションになる。**BE無しで Capability を公開する実例**。
 
 ## 工業系MOD連携の設計方針
 
