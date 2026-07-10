@@ -130,6 +130,7 @@ BlockBehaviour.Properties.of()
 - **`Shapes.empty()` にすると entityInside が呼ばれない**。触ってほしいなら薄板必須。
 - **`.noOcclusion()` を忘れると周囲のブロック面が消える**（描画は正しいが下の土ブロック等の面カリングが誤発動）
 - **プレイヤーが吹き飛ぶ**: 差分加算ではなく上限到達型を使う（`if (curForward < BELT_SPEED) addSpeed = BELT_SPEED - curForward`）
+- **⚠ 上面テクスチャの矢印方向とblockstate Y回転の一致（超注意）**: `UP` face のデフォルトUV は `u+ = +X (east)`, `v+ = +Z (south)`。**Y回転は上から見て時計回り (CW)**（vanilla furnace で検証: 前面が北デフォルト、y=90で東に回る）。テクスチャの矢印が画像内で `+u` に向いている（=eastを指す）なら、blockstateは `EAST:0°, SOUTH:90°, WEST:180°, NORTH:270°`。これを90°ずらすと**視覚と物理FACINGが食い違い**、「見た目は縦に流れるベルトなのに乗ると横に押される」という混乱が起きる（実体験）。
 - **アイテムが端で機械に入らない**: 相手側 face が `dir.getOpposite()` 側であることを確認。ホッパーなど「上面から入れる」機械を隣に置いても水平に投入は成立しないので注意
 - **中間ベルトで途中に機械があるとき**: 現状は「隣がベルトでなければ端点」判定なので、途中に機械を挟むと吸われる（意図通り）
 - **多量のItemEntity で重い**: Phase 1 は生の ItemEntity なので、100個並べるとFPSに影響。Create 式（BE 内で仮想ストレージ管理）に寄せると重量減。Phase 4 以降のテーマ。
