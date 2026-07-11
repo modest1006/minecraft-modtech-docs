@@ -148,7 +148,7 @@ event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PART_BE.get(), (partBe
 - **チャンク境界での分割ロード**（片側だけロード）→ 揃うまで休止する設計に。
 - **向きの座標変換ミス**（回転の当て方）→ 相対座標系を1箇所に集約。
 - **Capability委譲の null 処理**（未形成/コントローラ未ロード時）。
-  - ⚠ **既知の問題（2026-07-11 レビュー）**: 現在の assembler 実装は委譲時に `getController() != null` しか見ておらず **`isFormed()` を確認していない**。またNBT復元後に構造の再検証をしないため、セーブ異常やチャンク片側ロードで「未形成なのに Capability 公開」「ゴースト形成」の余地がある。対処は [review-2026-07-11.md](review-2026-07-11.md) 指摘2・4。
+  - ✅ **修正済み（2026-07-11）**: 委譲時に `controller.isFormed()` も確認するようにし、さらにロード後の初回 serverTick で構造を再検証（`isStructureIntact()`）して不成立なら自動 `unform()` する。セーブ異常・ワールド編集・チャンク片側ロードによるゴースト形成を自己修復できる（[review-2026-07-11.md](review-2026-07-11.md) 指摘2・4）。
 - **崩壊検出漏れ**でゴースト状態が残る → `onRemove`/`neighborChanged` を必ず塞ぐ。
 - **再検証が重い** → dirtyフラグ/デバウンスで毎tickフル検証を避ける。
 - BE直接参照を持ち続けない（`getBlockEntity(controllerPos)` で都度取得）。
