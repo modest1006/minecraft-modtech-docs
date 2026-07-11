@@ -46,6 +46,7 @@ $env:JAVA_HOME = [System.Environment]::GetEnvironmentVariable('JAVA_HOME','Machi
 - 初回の `build` / `runClient` は NeoForge・Minecraft のダウンロードと復号のため数分かかる（以降はキャッシュされ高速）。
 - 実行時の作業ディレクトリは `run/`（gitignore 済み）。ワールドデータやログはここに出る。ログは `run/logs/latest.log`。
 - 単体の GameTest だけ回す仕組みは `runGameTestServer`。JUnit 的な純ロジックテストは現状なし（`src/test` は未使用）。
+- **GameTest は導入済み**（`src/main/java/com/example/techlab/gametest/`、テンプレは `src/main/gametest/structures/*.snbt`）。カタパルト/ベルコン/アセンブラの機能テスト 4 本が `runGameTestServer` で ~1.5 秒で全 PASS することを確認。書き方・落とし穴は [docs/gametest-setup.md](docs/gametest-setup.md) 参照（`@PrefixGameTestTemplate(false)` で共有テンプレ、SNBT ローダーは dev 環境限定 等）。
 
 ## デバッグ
 

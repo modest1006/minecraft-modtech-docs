@@ -105,6 +105,7 @@ com.example.techlab
 - [docs/moving-blocks-collision.md](docs/moving-blocks-collision.md) … 動くブロック（エレベーター/自動ドア）と当たり判定の各アプローチ。A:テレポート/瞬間、B:VoxelShape段階アニメ、C:ピストン式移動ブロック、D:エンティティ化コントラプション（Create/Moving Elevators方式）。
 - [docs/belt-conveyor.md](docs/belt-conveyor.md) … ベルトコンベアの実装（薄板VoxelShape＋`entityInside`で上限型加速＋センタリング＋端点で`IItemHandler.insertItemStacked`）。Phase 1 は `techlab:conveyor` として実装済み。UVスクロール／上り下り／速度差はPhase 2〜4のロードマップ。
 - [docs/catapult.md](docs/catapult.md) … アイテムカタパルト（BE無しブロックに`IItemHandler`を公開→挿入時に即 `ItemEntity` を 45°放物線発射）。Phase 1 は `techlab:catapult` として実装済み。ベルコンと直結すると物流アトラクションになる。**BE無しで Capability を公開する実例**。
+- [docs/gametest-setup.md](docs/gametest-setup.md) … GameTest による**機能自動テスト**の導入・書き方・落とし穴。`runGameTestServer` で 1.5 秒で全 PASS する 4 本を試作済み（カタパルト発射／ベルコン搬送／アセンブラ形成／パイプ搬入出ルーティング）。SNBT テンプレは dev 環境限定ローダー経由なので `src/main/gametest/structures/` にバージョン管理→`run/gameteststructures/` へ Copy タスクで配置。
 
 ## 工業系MOD連携の設計方針
 
