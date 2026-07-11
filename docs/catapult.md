@@ -137,6 +137,7 @@ BlockBehaviour.Properties.of()
 
 ## ハマりどころ
 
+- ⚠ **既知の問題（2026-07-11 レビュー）**: `LaunchHandler` が生成時の `BlockState` をフィールド保持しているため、パイプMODがハンドラを**キャッシュ**すると POWER/FACING 変更後も古い状態で発射される可能性がある。対処は `insertItem` 内で `level.getBlockState(pos)` を読み直す（[review-2026-07-11.md](review-2026-07-11.md) 指摘3）。
 - **`setPickUpDelay(0)` にすると足元で即回収される**: 20 tick（1秒）以上の delay を付ける。
 - **POWER 段階を blockstate に反映すると variant が 12 個になり冗長**: 見た目に絡まないプロパティは `forAllStatesExcept(POWER)` で必ず除外する。
 - **上面テクスチャの矢印方向 vs Y 回転**: [belt-conveyor.md](belt-conveyor.md) と同じ落とし穴。今回は orientable モデルを使い、front テクスチャを **NORTH** 面に置いてある。それに合わせて上面矢印は「画像トップ = -Z = 北」を向ける。Y回転は vanilla furnace と同じ (NORTH:0, EAST:90, SOUTH:180, WEST:270)。

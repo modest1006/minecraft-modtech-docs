@@ -106,6 +106,7 @@ com.example.techlab
 - [docs/belt-conveyor.md](docs/belt-conveyor.md) … ベルトコンベアの実装（薄板VoxelShape＋`entityInside`で上限型加速＋センタリング＋端点で`IItemHandler.insertItemStacked`）。Phase 1 は `techlab:conveyor` として実装済み。UVスクロール／上り下り／速度差はPhase 2〜4のロードマップ。
 - [docs/catapult.md](docs/catapult.md) … アイテムカタパルト（BE無しブロックに`IItemHandler`を公開→挿入時に即 `ItemEntity` を 45°放物線発射）。Phase 1 は `techlab:catapult` として実装済み。ベルコンと直結すると物流アトラクションになる。**BE無しで Capability を公開する実例**。
 - [docs/gametest-setup.md](docs/gametest-setup.md) … GameTest による**機能自動テスト**の導入・書き方・落とし穴。`runGameTestServer` で 1.5 秒で全 PASS する 4 本を試作済み（カタパルト発射／ベルコン搬送／アセンブラ形成／パイプ搬入出ルーティング）。SNBT テンプレは dev 環境限定ローダー経由なので `src/main/gametest/structures/` にバージョン管理→`run/gameteststructures/` へ Copy タスクで配置。
+- [docs/review-2026-07-11.md](docs/review-2026-07-11.md) … **総括レビュー**（Claude + Codex クロスレビュー）。検証済みの既知の問題（recipe energy 未使用／Capability 委譲の isFormed 未チェック／LaunchHandler の stale state／NBT 復元後の再検証なし）と負債返済の優先順位。**新しい作業を始める前に一読推奨**。
 
 ## 工業系MOD連携の設計方針
 
@@ -129,6 +130,9 @@ com.example.techlab
 
 - これらを実装した機械は、Mekanism/IE/Thermal 等と**追加コードなしで相互運用**できる（各MODがこの標準に対応しているため）。
 - 独自エネルギー単位を作らない。FE(Forge Energy)/mB(液体)の標準に合わせる。
+- **Capability の登録場所は 2 箇所に分かれている**ので注意:
+  - `ModCapabilities` … 通常ブロック向け（energy_machine の FE、catapult の BE無し ItemHandler）。`TechLab` コンストラクタから `modEventBus.addListener` で登録。
+  - `ModMultiblock.onRegisterCapabilities` … **アセンブラ系はこちら**（コントローラ/ケーシングの FE + Item 委譲）。マルチブロックの隔離方針（将来のアドオン切り出し）に合わせて登録も隔離している。
 
 ### 3. 相手MOD固有APIに触るのは最後の手段
 

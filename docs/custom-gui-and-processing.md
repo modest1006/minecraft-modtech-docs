@@ -40,6 +40,7 @@
     - `Ingredient.CODEC_NONEMPTY.fieldOf("input_a")` … 空`Ingredient`禁止
     - `ItemStack.STRICT_CODEC.fieldOf("result")` … `{"id":"...","count":1}` 形式
     - `Codec.INT.fieldOf("energy")`
+  - ⚠ **既知の問題（2026-07-11 レビューで発覚）**: この `energy` は JSON で必須なのに、`serverTick` 側は固定値 `ENERGY_PER_TICK × MAX_PROGRESS` で消費しており**レシピの値が反映されない**。レシピごとにコストを変える場合は `recipe.energy() / MAX_PROGRESS` を per-tick 消費にする修正が必要。詳細は [review-2026-07-11.md](review-2026-07-11.md) 指摘1。
 - `crafting/ModRecipes`: `RecipeType.simple(id)` と Serializer を `DeferredRegister<RecipeSerializer<?>>`/`<RecipeType<?>>` に登録
 - サンプル JSON: `data/techlab/recipe/*.json` に手書き（レシピは datagen 化する価値もあるが型を登録すれば手書きJSONで十分ロードされる）
 
